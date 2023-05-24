@@ -46,8 +46,7 @@ public class GraphPreprocessor {
         HashMap<String, Integer> vertices = gp.getVertices();
 
         // Run test
-        // testPreprocess(vertices);
-        System.out.println(vertices.size());
+        testPreprocess(vertices);
     }
 
     // A simple test function
