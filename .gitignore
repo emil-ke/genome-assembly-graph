@@ -2,3 +2,4 @@
 /.idea
 /src/*.class
 project_genome_assembly_graph.iml
+/out
