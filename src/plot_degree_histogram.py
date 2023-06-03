@@ -4,6 +4,15 @@ import os
 import numpy as np
 
 def load_degrees(filename):
+    """
+    Load the degree values from the specified file.
+
+    Args:
+        filename (str): The name of the file containing the degree values.
+
+    Returns:
+        list: A list of degree values.
+    """
     degrees = []
     with open(filename, 'r') as file:
         for line in file:
@@ -11,6 +20,13 @@ def load_degrees(filename):
     return degrees
 
 def plot_degree_histogram(degrees, base_output_file):
+    """
+    Plot the histogram of degree distribution in both linear and logarithmic scale.
+
+    Args:
+        degrees (list): A list of degree values.
+        base_output_file (str): The base name for the output plot files.
+    """
     plt.style.use('dark_background')
 
     # Prepare bins
