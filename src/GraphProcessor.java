@@ -110,23 +110,42 @@ public class GraphProcessor {
     }
 
     /**
-     * Writes the density of each component in the graph with at least three vertices to a file.
+     * Calculates the density of each component in the graph with at least three vertices and writes them to a file.
      * The file's name is the base filename followed by "_component_densities.txt".
-     * The density of a component is defined as twice the number of edges divided by the number
-     * of nodes times the number of nodes minus one.
+     * Only components with densities between 0 and 1 (inclusive) are considered.
      *
      * @param filename The base filename to write to.
      */
     public void calculateComponentDensityToFile(String filename) {
+        List<Double> densities = new ArrayList<>();
+
+        Set<Integer> visited = new HashSet<>();
+
+        // Iterate over each node in the graph
+        for (int node : graph.keySet()) {
+            // Check if the node has not been visited
+            if (!visited.contains(node)) {
+                Set<Integer> component = new HashSet<>();
+
+                // Perform depth-first search to populate the component set
+                dfsDensity(node, visited, component);
+
+                if (component.size() >= 3) {
+                    double density = calculateDensity(component);
+                    densities.add(density);
+                }
+            }
+        }
+
+        // Write the densities to a file
         try (PrintWriter pw = new PrintWriter(new FileWriter(filename + "_component_densities.txt"))) {
-            Set<Integer> visited = new HashSet<>();
-            for (int node : graph.keySet()) {
-                if (!visited.contains(node)) {
-                    Set<Integer> component = new HashSet<>();
-                    dfsDensity(node, visited, component);
-                    if (component.size() >= 3) {
-                        pw.println(calculateDensity(component));
-                    }
+            for (double density : densities) {
+                // Check if the density is within the valid range (between 0 and 1 inclusive)
+                // The graph is messy so I got an error where the were components that had density
+                // greater than 1 which is impossible
+                if (density >= 0 && density <= 1) {
+                    // Write the density to the file
+                    pw.println(density);
                 }
             }
         } catch (IOException e) {
@@ -143,13 +162,23 @@ public class GraphProcessor {
      */
     private double calculateDensity(Set<Integer> component) {
         int edgesCount = 0;
+
+        // Iterate over each node in the component
         for (int node : component) {
-            for (int neighbor : graph.get(node)) {
-                edgesCount += (component.contains(neighbor)) ? 1 : 0;
+            // Get the neighbors of the current node
+            List<Integer> neighbors = graph.get(node);
+
+            // Count the number of neighbors within the component
+            for (int neighbor : neighbors) {
+                if (component.contains(neighbor)) {
+                    edgesCount++;
+                }
             }
         }
+
         double nodesCount = component.size();
-        return edgesCount / (2.0 * nodesCount * (nodesCount - 1));
+        double possibleEdges = (nodesCount * (nodesCount - 1)) / 2.0;
+        return edgesCount / possibleEdges;
     }
 
     /**
