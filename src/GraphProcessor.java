@@ -84,7 +84,7 @@ public class GraphProcessor {
      * Time Complexity: O(V + E) where V is the number of nodes and E is the number of edges in the graph.
      */
     public int countComponents() {
-        Set<Integer> visited = new HashSet<>();
+        Set<Integer> visited = new HashSet<>(); // We use a HashSet instead of array better for time complexity (contains operation)
         int componentCount = 0;
 
         for (int node : graph.keySet()) {
