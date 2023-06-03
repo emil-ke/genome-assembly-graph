@@ -2,17 +2,23 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-def plot_component_density_histogram(filename, base_output_file):
+def parse_component_densities(filename):
     component_densities = []
+    
+    # Read component densities from the file
     with open(filename, 'r') as file:
         for line in file:
             density = float(line)
             component_densities.append(density)
 
+    return component_densities
+
+def plot_component_density_histogram(component_densities, base_output_file):
     plt.style.use('dark_background')
 
     # Plot the histogram in linear scale
-    plt.hist(component_densities, bins=70, edgecolor='black')
+    # Note: may need to change number of bins for smaller test cases and such
+    plt.hist(component_densities, bins=70, edgecolor='black') 
     plt.xlabel('Component Densities')
     plt.ylabel('Frequency')
     plt.title('Component Density Distribution (Linear Scale)')
@@ -29,13 +35,14 @@ def plot_component_density_histogram(filename, base_output_file):
 
 def main():
     if len(sys.argv) != 2:
-        print("Error please try again.\nUsage: python component_density.py <file_path>")
+        print("Error: Invalid arguments.\nUsage: python component_density.py <file_path>")
         exit(1)
 
     input_file = sys.argv[1]
     base_name = os.path.splitext(input_file)[0]
 
-    plot_component_density_histogram(input_file, base_name)
+    component_densities = parse_component_densities(input_file)
+    plot_component_density_histogram(component_densities, base_name)
 
 if __name__ == "__main__":
     main()
