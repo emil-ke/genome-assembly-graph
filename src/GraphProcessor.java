@@ -136,8 +136,7 @@ public class GraphProcessor {
 
     /**
      * Calculates the density of a given component. 
-     * Density is defined as twice the number of edges divided by the product of the number of nodes 
-     * and the number of nodes minus one.
+     * For a undirected simple graph G=(V,E) density is defined as (2|E|)/(|V|(|V|-1)).
      *
      * @param component The nodes of the component to calculate the density of.
      * @return The density of the component.
