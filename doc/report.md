@@ -1,4 +1,4 @@
-# Report: Genome assembly project
+# Report: Genome Assembly Graph Project
 
 ## DA3018
 
@@ -8,17 +8,17 @@
 
 ### Preprocessing the Data
 
-The given data in the `.m4` file was preprocessed to remove unnecessary columns using the `awk` commands. The following steps were performed:
+The given data in the `.m4` file was preprocessed to remove unnecessary columns using `awk`. The following steps were performed:
 
 1. The command `awk '$7 >= 1000 && $11 >= 1000 { print }' Spruce_fingerprint_2017-03-10_16.48.olp.m4 > filtered_data.m4` was executed to filter out lines with a sufficiently large overlap. The resulting lines were saved in the file `filtered_data.m4`.
 
 2. The command `awk '{ $3=""; $4=""; $5=""; $9=""; print }' filtered_data.m4 > cleaned.m4` was executed to remove columns 3, 4, 5, and 9 from the `filtered_data.m4` file. The resulting cleaned data was saved in the file `cleaned.m4`.
 
-See the notebook entry for 2023-05-27 for more info about this (located in doc/notebook/2023-05-27.md). The solution assumes that the data is pre-cleaned so this is a necessary step.
+See the notebook entry for 2023-05-27 ([here](./notebook/2023-05-27.md)) for more info about this (located in doc/notebook/2023-05-27.md). The solution assumes that the data is pre-cleaned so this is a necessary step.
 
 ### Graph Processing and Degree Distribution
 
-On the date 2023-06-02, a Java class named `GraphProcessor` was created to handle the graph processing part of the project. The class utilizes a HashMap to represent the graph and provides various methods for graph analysis. Below is the code for the necessary parts of `GraphProcessor` class for the degree distribution part of the project (i.e. report the degree distribution of the implicit graph which is created by our dataset):
+On the date 2023-06-02 ([Notebook entry for this day](./notebook/2023-06-02.md)), a Java class named `GraphProcessor` was created to handle the graph processing part of the project. The class utilizes a HashMap to represent the graph and provides various methods for graph analysis. Below is the code for the necessary parts of `GraphProcessor` class for the degree distribution part of the project (i.e. report the degree distribution of the implicit graph which is created by our dataset):
 
 ```java
 import java.io.*;
@@ -98,14 +98,14 @@ public class GraphProcessor {
     }
     /*
     ... <the rest of the code> ...
-    /*
+    */
 ```
 
 The attribute `identifierToInt` is a HashMap mapping node identifiers (contig strings) to integers and the `graph` attribute is a HashMap representing the graph as an adjacency list. This representation allows for efficient storage and retrieval of graph information (it uses integers as keys instead of the long contig string).
 
 The `parseFile` method reads the input file line by line and creates vertices and edges to the graph. This process has time complexity $O(n)$, where $n$ is the number of lines in the file. The space complexity is $O(n)$.
 
-We calculate the degree distribution via the method `calculateDegreesToFile` and store it in a new TXT file. The method iterates over each vertex in the graph and retrives the size of the adjacency list, which is the degree of the given vertex. The time complexity of this operation is $O(n)$, where $n$ is the number of nodes in the graph. The space complexity is $O(1)$ because it doesn't use any addition data structures that grow with the input file size (it only createsa PrintWriter and FileWriter, which do not depend on input size).
+We calculate the degree distribution via the method `calculateDegreesToFile` and store it in a new TXT file. The method iterates over each vertex in the graph and retrives the size of the adjacency list, which is the degree of the given vertex. The time complexity of this operation is $O(n)$, where $n$ is the number of nodes in the graph. The space complexity is $O(1)$ because it doesn't use any additional data structures that grow with the input file size (it only createsa PrintWriter and FileWriter, which do not depend on input size).
 
 The method `getOrCreateIntIdentifier` assigns an integer identifier to each vertex in the graph. It uses a HashMap `identifierToInt` to store the mappings between node identifiers and integers. This ensures uniqueness. The average case time complexity of this is $\theta(1)$ (I think it's $O(n)$ in the worst case if there is a collision).
 
@@ -167,20 +167,20 @@ The time complexity of the algorithm is $O(V + E)$, where $V$ is the number of n
 
 The DFS algorithm is well-suited for our dataset, providing an efficient solution to count components with at least three vertices. We didn't encounter any significant limitations or challenges when applying this algorithm to our project.
 
-The number of connected components with at least three components in the graph formed by the cleaned dataset (which is supposed to be just the data we care about) is 226,769.
+The number of connected components with at least three vertices in the graph formed by the cleaned dataset (which is supposed to be just the data we care about) is 226,769.
 
 ```bash
 ❯ javac GraphProcessor.java; jar cfm GraphProcessor.jar MANIFEST.MF GraphProcessor.class; java -Xss1G -Xms24G -jar GraphProcessor.jar ../overlaps.m4/cleaned.m4
 Number of components with at least three vertices: 226796
 ```
 
-See notebook entry for the date 2023-06-03 for more info.
+See notebook entry for the date 2023-06-03 for more info [here](./notebook/2023-06-03.md).
 
 ---
 
 ### Component Density Distribution
 
-The density of a component is the number of edges in the component divided by the number of all possible edges for a component with the same number of vertices. That is, for a component $C=(V, E)$ the numerator is $|E|$ and the denominator is the number of edges in the complete graph with $|V|$ vertices $K_{|V|}$ (because a complete graph has the maximum number of edges for any simple undirected graph) and this is equal to $|V|(|V|-1)/2$. So graph density is given by $\frac{|E|}{|V|(|V|-1)/2}=\frac{2|E|}{|V|(|V|-1)}$ (for simple undirected graphs, and thus also components because components). See [Dense Graph Wikipedia Page](https://en.wikipedia.org/wiki/Dense_graph) and notebook entry for 2023-06-03. This is what we are trying to find for each component (of size $\geq$ 3) in our graph. This is the relevant Java code for this:
+The density of a component is the number of edges in the component divided by the number of all possible edges for a component with the same number of vertices. That is, for a component $C=(V, E)$ the numerator is $|E|$ and the denominator is the number of edges in the complete graph with $|V|$ vertices $K_{|V|}$ (because a complete graph has the maximum number of edges for any simple undirected graph) and this is equal to $|V|(|V|-1)/2$. So graph density is given by $\frac{|E|}{|V|(|V|-1)/2}=\frac{2|E|}{|V|(|V|-1)}$ (for simple undirected graphs, and thus also components because components). See [Dense Graph Wikipedia Page](https://en.wikipedia.org/wiki/Dense_graph) and [notebook entry for 2023-06-03](./notebook/2023-06-03.md). This is what we are trying to find for each component (of size $\geq$ 3) in our graph. This is the relevant Java code for this:
 
 ```java
     /**
@@ -229,7 +229,7 @@ The density of a component is the number of edges in the component divided by th
 
     /**
      * Calculates the density of a given component.
-     * For a undirected simple graph G=(V,E) density is defined as (2|E|)/(|V|(|V|-1)).
+     * For an undirected simple component C=(V,E) density is defined as (2|E|)/(|V|(|V|-1)).
      *
      * @param component The nodes of the component to calculate the density of.
      * @return The density of the component.
@@ -252,7 +252,7 @@ The density of a component is the number of edges in the component divided by th
 
         double nodesCount = component.size();
         double possibleEdges = (nodesCount * (nodesCount - 1)) / 2.0;
-        return edgesCount / possibleEdges;
+        return (double) edgesCount / possibleEdges; // cast to double to ensure floating-point division
     }
 
     /**
@@ -275,11 +275,11 @@ The density of a component is the number of edges in the component divided by th
     }
 ```
 
-A depth-first search (DFS) algorithm was used here as well. Here it is used to identify connected components. Starting from each unvisited node, the DFS explores all reachable vertices to populate the component set. We then calculate the density with the density forumal for each component with at least three vertices.
+A depth-first search (DFS) algorithm was used here as well. It is used to identify connected components. Starting from each unvisited node, the DFS explores all reachable vertices to populate the component set. We then calculate the density with the density forumal for each component with at least three vertices.
 
-- Time Complexity: The time complexity of the `calculateComponentDensityToFile` method is $O(|V| + |E|)$, where $|V|$ is the number of nodes and $|E|$ is the number of edges in the graph. This is because the method performs a depth-first search on the graph, visiting each node and its neighbors once. The `calculateDensity` method has a nested loop that iterates through each node and its neighbors, resulting in a time complexity of $O(N^2)$, where $N$ is the number of nodes in the component.
+- Time Complexity: The time complexity of the `calculateComponentDensityToFile` method is $O(|V| + |E|)$, where $|V|$ is the number of nodes and $|E|$ is the number of edges in the graph. This is because the method performs a depth-first search on the graph, visiting each node once and its neighbors once. The `calculateDensity` method has a nested loop that iterates through each node and its neighbors, resulting in a time complexity of $O(N^2)$, where $N$ is the number of nodes in the component.
 
-- Space Complexity: The `calculateComponentDensityToFile` method uses a HashSet to keep track of visited nodes, which requires $O(|V|)$ space. The `calculateDensity` method uses additional space to store the component nodes and neighbors, resulting in a space complexity of $O(N)$, where $N$ is the number of nodes in the component.
+- Space Complexity: The `calculateComponentDensityToFile` method uses a HashSet to keep track of visited nodes, which requires $O(|V|)$ space. The `calculateDensity` method uses additional space to store the component nodes and their neighbors, resulting in a space complexity of $O(N)$, where $N$ is the number of nodes in the component.
 
 The Python script to plot the histogram of the density distribution is called `plot_component_density_histogram.py` in the src folder.
 
@@ -291,7 +291,7 @@ Here are the histograms for the cleaned data:
 
 ## Usage
 
-Make sure that the data is in a folder in the directory. My dataset folder is called overlap.m4. This is my directory setup:
+Make sure that the data is in a folder in the directory. My dataset folder is called `overlap.m4`. This is my directory setup:
 
 ```bash
 ❯ tree .
