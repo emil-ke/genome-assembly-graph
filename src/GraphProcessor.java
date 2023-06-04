@@ -155,7 +155,7 @@ public class GraphProcessor {
 
     /**
      * Calculates the density of a given component. 
-     * For a undirected simple graph G=(V,E) density is defined as (2|E|)/(|V|(|V|-1)).
+     * For a undirected simple component C=(V,E) density is defined as (2|E|)/(|V|(|V|-1)).
      *
      * @param component The nodes of the component to calculate the density of.
      * @return The density of the component.
@@ -178,7 +178,7 @@ public class GraphProcessor {
 
         double nodesCount = component.size();
         double possibleEdges = (nodesCount * (nodesCount - 1)) / 2.0;
-        return edgesCount / possibleEdges;
+        return (double) edgesCount / possibleEdges; // cast to double to ensure floating-point division
     }
 
     /**
